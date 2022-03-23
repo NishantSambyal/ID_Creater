@@ -27,6 +27,7 @@ function Route() {
   function HomeStack() {
     return (
       <Stack.Navigator screenOptions={{headerShown: false}}>
+
         <Stack.Screen name="Login" component={screens.Login} />
         <Stack.Screen name="StudentName" component={screens.StudentName} />
         <Stack.Screen name="Class" component={screens.Class} />
@@ -39,6 +40,7 @@ function Route() {
         <Stack.Screen name="Address" component={screens.Address} />
         <Stack.Screen name="Contact" component={screens.Contact} />
         <Stack.Screen name="Profile" component={screens.Profile} />
+
         <Stack.Screen name="Preview" component={screens.Preview} />
       </Stack.Navigator>
     );
