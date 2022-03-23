@@ -32,7 +32,7 @@ const BloodGroup = () => {
       style={styles.KeyboardAvoidingView}
       bounces={false}>
       <BaseScreen>
-        <Header title={'Roll Number'} />
+        <Header title={'Blood Group'} />
         <View style={styles.container}>
           <View style={{width: 300, height: 300, alignSelf: 'center'}}>
             <LottieView source={bloodGroupAnim} autoPlay loop />
