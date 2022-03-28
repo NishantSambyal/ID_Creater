@@ -13,13 +13,15 @@ import {BaseScreen, Header, TextView, CustomButton} from '../../components';
 import {useNavigation} from '@react-navigation/native';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import styles from './style';
+import {useRoute} from '@react-navigation/native';
 import {captureImage} from '../../imagePicker';
 
 const Profile = () => {
+  const route = useRoute();
   const navigation = useNavigation();
   const [documentPic, setDocumentPic] = useState();
 
-  const hasLocationPermission = useCallback(async () => {
+  const hasCameraPermission = useCallback(async () => {
     if (Platform.OS === 'android' && Platform.Version < 23) {
       return true;
     }
@@ -56,7 +58,7 @@ const Profile = () => {
   }, []);
 
   const openCamera = () => {
-    if (hasLocationPermission()) {
+    if (hasCameraPermission()) {
       captureImage({single: true}).then(res => {
         if (res?.assets) {
           const assets = res?.assets;
@@ -67,21 +69,28 @@ const Profile = () => {
   };
 
   const handleContinue = () => {
-    alert('Thank You');
+    let data = route.params?.data;
+    data = {...data, photo: documentPic};
+    navigation.navigate('Preview', {data});
   };
 
   const anim = () => (
     <View style={{alignItems: 'center'}}>
       {documentPic ? (
-        <ImageBackground
-          source={{uri: documentPic.uri}}
-          style={[styles.imageStyle]}
-          imageStyle={{borderRadius: 8}}
-        />
+        <View>
+          <ImageBackground
+            source={{uri: documentPic.uri}}
+            style={[styles.imageStyle]}
+            imageStyle={{borderRadius: 8}}
+          />
+          <TouchableOpacity onPress={openCamera}>
+            <TextView style={styles.retakePic}>RETAKE PICTURE</TextView>
+          </TouchableOpacity>
+        </View>
       ) : (
         <TouchableOpacity onPress={openCamera}>
           <View style={{alignItems: 'center'}}>
-            <View style={{width: 300, height: 300, position: 'absolute'}}>
+            <View style={{width: 300, height: 200, position: 'absolute'}}>
               <LottieView source={profileAnim} autoPlay loop />
             </View>
             <View style={styles.fingerPic}>
@@ -102,12 +111,12 @@ const Profile = () => {
       style={styles.KeyboardAvoidingView}
       bounces={false}>
       <BaseScreen>
-        <Header title={'Profile Pic'} />
+        <Header title={'Student Photo'} />
         <View style={styles.container}>
           {anim()}
-          <TextView style={styles.signInTitle}>Profile Image</TextView>
+          <TextView style={styles.signInTitle}>Student Photo</TextView>
           <TextView style={styles.signInDescription}>
-            This Application require your Profile image as mandatory field
+            This Application require your image as mandatory field
           </TextView>
           <View style={styles.buttonWrapper}>
             <CustomButton

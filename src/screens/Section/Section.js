@@ -12,13 +12,17 @@ import {
 import {useNavigation} from '@react-navigation/native';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import styles from './style';
+import {useRoute} from '@react-navigation/native';
 
 const StudentName = () => {
+  const route = useRoute();
   const navigation = useNavigation();
   const [name, setName] = useState();
 
   const handleContinue = () => {
-    navigation.navigate('Roll');
+    let data = route.params?.data;
+    data = {...data, section: name};
+    navigation.navigate('Roll', {data});
   };
 
   return (

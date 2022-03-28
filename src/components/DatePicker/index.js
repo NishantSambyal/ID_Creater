@@ -6,7 +6,7 @@ import styles from './styles';
 import {calendar} from '../../assets/icons';
 import {TextView} from '..';
 
-const DatePicker = ({setDate, placeHolder}) => {
+const DatePicker = ({setDate, placeHolder, data}) => {
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
   const [selectedDate, setSelectedDate] = useState(placeHolder);
 
@@ -21,6 +21,15 @@ const DatePicker = ({setDate, placeHolder}) => {
   const handleConfirm = date => {
     hideDatePicker();
     const formattedDate = moment(date).format('DD-MM-YYYY');
+    if (data) {
+      let updatedData = {
+        ...data,
+        dob: formattedDate,
+      };
+      setDate(updatedData);
+      setSelectedDate(formattedDate);
+      return;
+    }
     setDate(formattedDate);
     setSelectedDate(formattedDate);
   };

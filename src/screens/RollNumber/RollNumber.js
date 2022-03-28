@@ -11,14 +11,18 @@ import {
 } from '../../components';
 import {useNavigation} from '@react-navigation/native';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
+import {useRoute} from '@react-navigation/native';
 import styles from './style';
 
 const RollNumber = () => {
+  const route = useRoute();
   const navigation = useNavigation();
   const [name, setName] = useState();
 
   const handleContinue = () => {
-    navigation.navigate('BloodGroup');
+    let data = route.params?.data;
+    data = {...data, roll_no: name};
+    navigation.navigate('BloodGroup', {data});
   };
 
   return (

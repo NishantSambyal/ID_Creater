@@ -10,15 +10,19 @@ import {
   CustomTextInput,
 } from '../../components';
 import {useNavigation} from '@react-navigation/native';
+import {useRoute} from '@react-navigation/native';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import styles from './style';
 
 const FatherName = () => {
+  const route = useRoute();
   const navigation = useNavigation();
   const [name, setName] = useState();
 
   const handleContinue = () => {
-    navigation.navigate('MotherName');
+    let data = route.params?.data;
+    data = {...data, father_name: name};
+    navigation.navigate('MotherName', {data});
   };
 
   return (
@@ -30,7 +34,7 @@ const FatherName = () => {
       style={styles.KeyboardAvoidingView}
       bounces={false}>
       <BaseScreen>
-        <Header title={`Father's Name`} />
+        <Header title={"Father's Name"} />
         <View style={styles.container}>
           <View style={{width: 300, height: 300, alignSelf: 'center'}}>
             <LottieView source={parentsAnim} autoPlay loop />

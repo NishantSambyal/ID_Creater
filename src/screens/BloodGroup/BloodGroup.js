@@ -11,14 +11,18 @@ import {
 } from '../../components';
 import {useNavigation} from '@react-navigation/native';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
+import {useRoute} from '@react-navigation/native';
 import styles from './style';
 
 const BloodGroup = () => {
+  const route = useRoute();
   const navigation = useNavigation();
   const [bloodType, setBloodType] = useState();
 
   const handleContinue = () => {
-    navigation.navigate('Dob');
+    let data = route.params?.data;
+    data = {...data, blood_group: bloodType};
+    navigation.navigate('Dob', {data});
   };
 
   const bloodArr = ['A+', 'A-', 'B+', 'B-', 'O+', 'O-', 'AB+', 'AB-'];

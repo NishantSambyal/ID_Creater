@@ -12,13 +12,17 @@ import {
 import {useNavigation} from '@react-navigation/native';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import styles from './style';
+import {useRoute} from '@react-navigation/native';
 
 const Class = () => {
+  const route = useRoute();
   const navigation = useNavigation();
   const [clas, setClas] = useState();
 
   const handleContinue = () => {
-    navigation.navigate('Section');
+    let data = route.params?.data;
+    data = {...data, class: clas};
+    navigation.navigate('Section', {data});
   };
   const classArr = [
     '1st',

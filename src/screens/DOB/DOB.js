@@ -11,15 +11,19 @@ import {
   DatePicker,
 } from '../../components';
 import {useNavigation} from '@react-navigation/native';
+import {useRoute} from '@react-navigation/native';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import styles from './style';
 
 const Dob = () => {
+  const route = useRoute();
   const navigation = useNavigation();
   const [date, setDate] = useState();
 
   const handleContinue = () => {
-    navigation.navigate('FatherName');
+    let data = route.params?.data;
+    data = {...data, dob: date};
+    navigation.navigate('FatherName', {data});
   };
 
   return (

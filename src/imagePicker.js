@@ -22,7 +22,6 @@ export const captureImage = (single = false) => {
     setTimeout(() => {
       launchCamera(pickerOptions, response => {
         if (response.didCancel) {
-          // console.log(response);
         } else if (response.error) {
           alert(response.error);
         }
@@ -41,7 +40,6 @@ export const openLibrary = (single = false) => {
   return new Promise(resolve =>
     launchImageLibrary(pickerOptions, response => {
       if (response.didCancel) {
-        // console.log(response);
       } else if (response.error) {
         alert(response.error);
       }

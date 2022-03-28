@@ -18,7 +18,8 @@ const StudentName = () => {
   const [name, setName] = useState();
 
   const handleContinue = () => {
-    navigation.navigate('Class');
+    const data = {student_name: name};
+    navigation.navigate('Class', {data});
   };
 
   return (
@@ -30,12 +31,12 @@ const StudentName = () => {
       style={styles.KeyboardAvoidingView}
       bounces={false}>
       <BaseScreen>
-        <Header title={'Your Name'} notEnable={true} />
+        <Header title={'Student Name'} notEnable={true} />
         <View style={styles.container}>
           <View style={{width: 300, height: 300, alignSelf: 'center'}}>
             <LottieView source={studentAnim} autoPlay loop />
           </View>
-          <TextView style={styles.signInTitle}>Your Name</TextView>
+          <TextView style={styles.signInTitle}>Student Name</TextView>
           <TextView style={styles.signInDescription}>
             This Application require your full name as mandatory field
           </TextView>

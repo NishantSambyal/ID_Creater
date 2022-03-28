@@ -10,15 +10,19 @@ import {
   CustomTextInput,
 } from '../../components';
 import {useNavigation} from '@react-navigation/native';
+import {useRoute} from '@react-navigation/native';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import styles from './style';
 
 const Address = () => {
+  const route = useRoute();
   const navigation = useNavigation();
   const [name, setName] = useState();
 
   const handleContinue = () => {
-    navigation.navigate('Contact');
+    let data = route.params?.data;
+    data = {...data, address: name};
+    navigation.navigate('Contact', {data});
   };
 
   return (
@@ -30,7 +34,7 @@ const Address = () => {
       style={styles.KeyboardAvoidingView}
       bounces={false}>
       <BaseScreen>
-        <Header title={`Address`} />
+        <Header title={'Address'} />
         <View style={styles.container}>
           <View style={{width: 300, height: 300, alignSelf: 'center'}}>
             <LottieView source={addressAnim} autoPlay loop />

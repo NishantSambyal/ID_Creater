@@ -4,6 +4,7 @@ import {colors} from '../../colors';
 export default StyleSheet.create({
   container: {
     margin: 20,
+    marginTop: 30,
   },
   KeyboardAvoidingViewContainerStyle: {
     justifyContent: 'space-between',
@@ -17,13 +18,20 @@ export default StyleSheet.create({
   },
   imageTitle: {
     fontSize: 20,
-    marginTop: 300,
+    marginTop: 270,
+    fontWeight: '700',
+    textAlign: 'center',
+    color: colors.primary,
+  },
+  retakePic: {
+    marginTop: 10,
+    fontSize: 20,
     fontWeight: '700',
     textAlign: 'center',
     color: colors.primary,
   },
   signInTitle: {
-    marginTop: 80,
+    marginTop: 40,
     fontSize: 32,
     fontWeight: '700',
   },
@@ -37,6 +45,6 @@ export default StyleSheet.create({
     width: 180,
     height: 180,
     position: 'absolute',
-    marginTop: 120,
+    marginTop: 80,
   },
 });

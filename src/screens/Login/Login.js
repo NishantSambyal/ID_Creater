@@ -23,21 +23,22 @@ const Login = () => {
     navigation.replace('StudentName');
   };
 
-  const validationCheck = () => {
-    if (!validateEmail(email)) {
+  const validationCheck = emailTxt => {
+    if (!validateEmail(emailTxt)) {
       return 'Please enter a valid email address';
     }
     return;
   };
 
   const onEmailChange = emailTxt => {
-    const someValidationError = validationCheck();
+    const emailStr = emailTxt.trim();
+    const someValidationError = validationCheck(emailStr);
     if (someValidationError) {
       setValidationMessage(someValidationError);
     } else {
       setValidationMessage(undefined);
     }
-    setEmail(emailTxt);
+    setEmail(emailStr);
   };
   const val = email && password && !validationMessage;
   return (

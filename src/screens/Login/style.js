@@ -31,7 +31,7 @@ export default StyleSheet.create({
   },
   KeyboardAvoidingView: {
     // flex: 1,
-    paddingTop: Platform.OS === 'android' ? 0 : 30,
+    // paddingTop: Platform.OS === 'android' ? 0 : 30,
   },
   buttonContainer: {marginHorizontal: 20},
   buttonWrapper: {
