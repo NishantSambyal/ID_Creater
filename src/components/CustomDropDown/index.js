@@ -7,6 +7,7 @@ import styles from './style';
 
 const CustomDropDown = props => {
   const {data, onValueChange, placeholder, ...rprops} = props;
+  const isArrOfObj = data.some(item => typeof item.name === 'string');
   return (
     <View style={styles.pickerContainer}>
       <SelectDropdown
@@ -15,6 +16,18 @@ const CustomDropDown = props => {
         dropdownIconPosition="left"
         buttonTextStyle={styles.picketText}
         defaultButtonText={placeholder}
+        buttonTextAfterSelection={(selectedItem, index) => {
+          if (isArrOfObj) {
+            return selectedItem.name;
+          }
+          return selectedItem;
+        }}
+        rowTextForSelection={(item, index) => {
+          if (isArrOfObj) {
+            return item.name;
+          }
+          return item;
+        }}
         onSelect={selectedItem => {
           onValueChange(selectedItem);
         }}

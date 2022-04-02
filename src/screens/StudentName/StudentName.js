@@ -9,16 +9,19 @@ import {
   CustomButton,
   CustomTextInput,
 } from '../../components';
+import {useRoute} from '@react-navigation/native';
 import {useNavigation} from '@react-navigation/native';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import styles from './style';
 
 const StudentName = () => {
   const navigation = useNavigation();
+  const route = useRoute();
   const [name, setName] = useState();
 
   const handleContinue = () => {
-    const data = {student_name: name};
+    let data = route.params?.data;
+    data = {...data, name};
     navigation.navigate('Class', {data});
   };
 

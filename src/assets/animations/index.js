@@ -9,6 +9,8 @@ const addressAnim = require('./address.json');
 const contact = require('./contact.json');
 const profileAnim = require('./profile.json');
 const fingerAnim = require('./finger.json');
+const aadharAnim = require('./aadhar.json');
+const registrationAnim = require('./registration.json');
 
 export {
   studentAnim,
@@ -22,4 +24,6 @@ export {
   contact,
   profileAnim,
   fingerAnim,
+  aadharAnim,
+  registrationAnim,
 };

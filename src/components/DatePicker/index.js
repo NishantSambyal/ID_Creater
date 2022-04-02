@@ -24,7 +24,7 @@ const DatePicker = ({setDate, placeHolder, data}) => {
     if (data) {
       let updatedData = {
         ...data,
-        dob: formattedDate,
+        date_of_birth: formattedDate,
       };
       setDate(updatedData);
       setSelectedDate(formattedDate);

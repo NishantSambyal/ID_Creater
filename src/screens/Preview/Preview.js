@@ -5,9 +5,10 @@ import {
   PermissionsAndroid,
   ToastAndroid,
   Platform,
+  Alert,
   TextInput,
 } from 'react-native';
-import React, {useState, useCallback} from 'react';
+import React, {useState, useEffect, useCallback} from 'react';
 import {
   BaseScreen,
   Header,
@@ -20,15 +21,68 @@ import {useNavigation} from '@react-navigation/native';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {useRoute} from '@react-navigation/native';
 import {captureImage} from '../../imagePicker';
+import {getClasses, registerUser} from '../../network';
 import styles from './style';
 
 const Preview = () => {
   const route = useRoute();
   const navigation = useNavigation();
   const [data, setData] = useState(route.params?.data);
+  const [classArr, setClassArr] = useState();
+  const [showRegistration, setShowRegistration] = useState(false);
+
+  useEffect(() => {
+    if (data.registration_number) {
+      setShowRegistration(true);
+    }
+    async function fetchMyAPI() {
+      const classData = await getClasses();
+      setClassArr(classData);
+    }
+    fetchMyAPI();
+  }, []);
 
   const handleContinue = () => {
-    alert('Thank you for submitting details');
+    let formData = new FormData();
+    formData.append('user_id', data.user_id);
+    formData.append('name', data.name);
+    formData.append('school_class_id', data.class.id);
+    formData.append('section', data.section);
+    formData.append('roll_number', data.roll_number);
+    formData.append('blood_group', data.blood_group);
+
+    formData.append('date_of_birth', data.date_of_birth);
+    formData.append('father_name', data.father_name);
+    formData.append('mother_name', data.mother_name);
+    formData.append('address', data.address);
+    formData.append('contact_information', data.contact_information);
+    formData.append('adhaar', data.adhaar);
+    if (showRegistration) {
+      formData.append('registration_number', data.registration_number);
+    }
+
+    formData.append('image', {
+      uri: data.photo.uri,
+      type: 'image/jpeg',
+      name: 'photo.jpg',
+    });
+    console.log('data', formData);
+    const response = registerUser(formData);
+    if (response.error) {
+      alert('Something went wrong! Please try again later');
+    } else {
+      Alert.alert(
+        'Thank You',
+        'Your details has been submitted successfully!',
+        [
+          {
+            text: 'Okay',
+            onPress: () => navigation.replace('Login'),
+            style: 'cancel',
+          },
+        ],
+      );
+    }
   };
   const hasCameraPermission = useCallback(async () => {
     if (Platform.OS === 'android' && Platform.Version < 23) {
@@ -81,10 +135,10 @@ const Preview = () => {
     }
   };
 
-  const onStudentNameChange = student_name => {
+  const onStudentNameChange = name => {
     let updatedData = {
       ...data,
-      student_name,
+      name,
     };
     setData(updatedData);
   };
@@ -105,10 +159,10 @@ const Preview = () => {
     setData(updatedData);
   };
 
-  const onRollNumberChange = roll_no => {
+  const onRollNumberChange = roll_number => {
     let updatedData = {
       ...data,
-      roll_no,
+      roll_number,
     };
     setData(updatedData);
   };
@@ -145,29 +199,45 @@ const Preview = () => {
     setData(updatedData);
   };
 
-  const onContactChange = contact => {
+  const onContactChange = contact_information => {
     let updatedData = {
       ...data,
-      contact,
+      contact_information,
+    };
+    setData(updatedData);
+  };
+
+  const onAadharChange = adhaar => {
+    let updatedData = {
+      ...data,
+      adhaar,
+    };
+    setData(updatedData);
+  };
+
+  const onRegistrationChange = registration_number => {
+    let updatedData = {
+      ...data,
+      registration_number,
     };
     setData(updatedData);
   };
   const bloodArr = ['A+', 'A-', 'B+', 'B-', 'O+', 'O-', 'AB+', 'AB-'];
 
-  const classArr = [
-    '1st',
-    '2nd',
-    '3rd',
-    '4th',
-    '5th',
-    '6th',
-    '7th',
-    '8th',
-    '9th',
-    '10th',
-    '11th',
-    '12th',
-  ];
+  // const classArr = [
+  //   '1st',
+  //   '2nd',
+  //   '3rd',
+  //   '4th',
+  //   '5th',
+  //   '6th',
+  //   '7th',
+  //   '8th',
+  //   '9th',
+  //   '10th',
+  //   '11th',
+  //   '12th',
+  // ];
   return (
     <KeyboardAwareScrollView
       enableOnAndroid={true}
@@ -202,20 +272,22 @@ const Preview = () => {
             <TextView style={styles.label}>Student Name</TextView>
             <TextInput
               style={styles.inputText}
-              value={data.student_name}
+              value={data.name}
               onChangeText={studentName => onStudentNameChange(studentName)}
             />
           </View>
           <View style={styles.cardContainer}>
             <TextView style={styles.label}>Class</TextView>
-            <CustomDropDown
-              data={classArr}
-              style={styles.inputText}
-              selectedValue={data.class}
-              placeholder="Select Class"
-              onValueChange={value => onClassChange(value)}
-              defaultValue={data.class || null}
-            />
+            {classArr && (
+              <CustomDropDown
+                data={classArr}
+                style={styles.inputText}
+                selectedValue={data.class}
+                placeholder="Select Class"
+                onValueChange={value => onClassChange(value)}
+                defaultValue={data.class || null}
+              />
+            )}
           </View>
           <View style={styles.cardContainer}>
             <TextView style={styles.label}>Section</TextView>
@@ -229,7 +301,7 @@ const Preview = () => {
             <TextView style={styles.label}>Roll Number</TextView>
             <TextInput
               style={styles.inputText}
-              value={data.roll_no}
+              value={data.roll_number}
               onChangeText={value => onRollNumberChange(value)}
             />
           </View>
@@ -239,7 +311,7 @@ const Preview = () => {
               data={bloodArr}
               style={styles.inputText}
               selectedValue={data.blood_group}
-              placeholder="Select Class"
+              placeholder="Select Blood Group"
               onValueChange={value => onBloodChange(value)}
               defaultValue={data.blood_group || null}
             />
@@ -249,7 +321,9 @@ const Preview = () => {
             <TextView style={styles.label}>Date of Birth</TextView>
             <DatePicker
               setDate={setData}
-              placeHolder={data?.dob ? data.dob : 'Date of birth'}
+              placeHolder={
+                data?.date_of_birth ? data.date_of_birth : 'Date of birth'
+              }
               data={data}
             />
           </View>
@@ -285,10 +359,32 @@ const Preview = () => {
             <TextInput
               style={styles.inputText}
               keyboardType="number-pad"
-              value={data.contact}
+              value={data.contact_information}
               onChangeText={value => onContactChange(value)}
             />
           </View>
+
+          <View style={styles.cardContainer}>
+            <TextView style={styles.label}>Aadhar Number</TextView>
+            <TextInput
+              style={styles.inputText}
+              keyboardType="number-pad"
+              value={data.adhaar}
+              onChangeText={value => onAadharChange(value)}
+            />
+          </View>
+          {showRegistration && (
+            <View style={styles.cardContainer}>
+              <TextView style={styles.label}>Registration Number</TextView>
+              <TextInput
+                style={styles.inputText}
+                keyboardType="number-pad"
+                value={data.registration_number}
+                onChangeText={value => onRegistrationChange(value)}
+              />
+            </View>
+          )}
+
           <View style={styles.buttonWrapper}>
             <CustomButton
               // disabled={!name}

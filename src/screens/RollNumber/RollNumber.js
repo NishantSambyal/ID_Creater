@@ -21,7 +21,7 @@ const RollNumber = () => {
 
   const handleContinue = () => {
     let data = route.params?.data;
-    data = {...data, roll_no: name};
+    data = {...data, roll_number: name};
     navigation.navigate('BloodGroup', {data});
   };
 

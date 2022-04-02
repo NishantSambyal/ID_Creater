@@ -21,8 +21,8 @@ const Contact = () => {
 
   const handleContinue = () => {
     let data = route.params?.data;
-    data = {...data, contact: name};
-    navigation.navigate('Profile', {data});
+    data = {...data, contact_information: name};
+    navigation.navigate('Aadhar', {data});
   };
 
   return (

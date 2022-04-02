@@ -10,6 +10,8 @@ import MotherName from './MotherName/MotherName';
 import Address from './Address/Address';
 import Contact from './Contact/Contact';
 import Profile from './Profile/Profile';
+import Aadhar from './Aadhar/Aadhar';
+import Registration from './Registration/Registration';
 import Preview from './Preview/Preview';
 
 export default {
@@ -25,5 +27,7 @@ export default {
   Address,
   Contact,
   Profile,
+  Aadhar,
+  Registration,
   Preview,
 };

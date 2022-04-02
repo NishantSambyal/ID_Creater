@@ -22,7 +22,7 @@ const Dob = () => {
 
   const handleContinue = () => {
     let data = route.params?.data;
-    data = {...data, dob: date};
+    data = {...data, date_of_birth: date};
     navigation.navigate('FatherName', {data});
   };
 

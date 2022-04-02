@@ -1,4 +1,4 @@
-import {View, Image, ScrollView} from 'react-native';
+import {View, Image} from 'react-native';
 import React, {useState} from 'react';
 import {
   BaseScreen,
@@ -12,15 +12,30 @@ import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {validateEmail} from '../../regex';
 import {useNavigation} from '@react-navigation/native';
 import styles from './style';
+import {loginUser} from '../../network';
+import Loader from '../../components/Loader';
 
 const Login = () => {
   const navigation = useNavigation();
-  const [email, setEmail] = useState();
-  const [password, setPassword] = useState();
+  const [email, setEmail] = useState('arshimemorial@gmail.com');
+  const [password, setPassword] = useState('Manzar@123');
+  const [loading, setLoading] = useState(false);
   const [validationMessage, setValidationMessage] = useState(undefined);
 
-  const handleContinue = () => {
-    navigation.replace('StudentName');
+  const handleContinue = async () => {
+    setLoading(true);
+    let formData = new FormData();
+    formData.append('email', email);
+    formData.append('password', password);
+    const response = await loginUser(formData);
+    if (response.status) {
+      setLoading(false);
+      const data = {user_id: response.user_info.id};
+      navigation.replace('StudentName', {data});
+    } else {
+      setLoading(false);
+      alert('Invalid username or password');
+    }
   };
 
   const validationCheck = emailTxt => {
@@ -88,6 +103,7 @@ const Login = () => {
               </View>
             </View>
           </View>
+          {loading && <Loader />}
         </React.Fragment>
       </BaseScreen>
     </KeyboardAwareScrollView>

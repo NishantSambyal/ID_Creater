@@ -53,6 +53,7 @@ export default StyleSheet.create({
     borderWidth: 0.5,
     borderColor: '#9E9D9D80',
     borderRadius: 6,
+    marginVertical: 10,
     padding: 10,
     paddingHorizontal: 20,
   },
