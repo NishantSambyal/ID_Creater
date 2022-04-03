@@ -57,4 +57,9 @@ export default StyleSheet.create({
     padding: 10,
     paddingHorizontal: 20,
   },
+  errorText: {
+    fontSize: 13,
+    color: 'red',
+    marginStart: 10,
+  },
 });

@@ -9,6 +9,7 @@ import {
   CustomButton,
   CustomTextInput,
 } from '../../components';
+import {validateAlphabets} from '../../regex';
 import {useRoute} from '@react-navigation/native';
 import {useNavigation} from '@react-navigation/native';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
@@ -18,12 +19,32 @@ const StudentName = () => {
   const navigation = useNavigation();
   const route = useRoute();
   const [name, setName] = useState();
+  const [validationMessage, setValidationMessage] = useState(undefined);
+
+  const validationCheck = emailTxt => {
+    if (!validateAlphabets(emailTxt)) {
+      return 'The name field must contain only alphabets';
+    }
+    return;
+  };
+
+  const onNameChange = nameText => {
+    const nameStr = nameText;
+    const someValidationError = validationCheck(nameStr);
+    if (someValidationError) {
+      setValidationMessage(someValidationError);
+    } else {
+      setValidationMessage(undefined);
+    }
+    setName(nameStr);
+  };
 
   const handleContinue = () => {
     let data = route.params?.data;
     data = {...data, name};
     navigation.navigate('Class', {data});
   };
+  const val = name && !validationMessage;
 
   return (
     <KeyboardAwareScrollView
@@ -46,11 +67,14 @@ const StudentName = () => {
           <CustomTextInput
             value={name}
             placeholder="eg: Rahul Kumar"
-            onChangeText={setName}
+            onChangeText={onNameChange}
           />
+          <TextView style={styles.errorText}>
+            {validationMessage && validationMessage}
+          </TextView>
           <View style={styles.buttonWrapper}>
             <CustomButton
-              disabled={!name}
+              disabled={!val}
               containerStyle={styles.buttonContainer}
               textStyle={styles.signUpText}
               onPress={handleContinue}

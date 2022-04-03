@@ -22,4 +22,9 @@ export default StyleSheet.create({
   buttonWrapper: {
     marginTop: 40,
   },
+  errorText: {
+    fontSize: 13,
+    color: 'red',
+    marginStart: 10,
+  },
 });

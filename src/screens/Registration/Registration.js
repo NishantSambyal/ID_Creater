@@ -43,7 +43,7 @@ const Registration = () => {
             Registration Number (optional)
           </TextView>
           <TextView style={styles.signInDescription}>
-            This Application require your Registration number as mandatory field
+            This Application require your Registration number as optional.
           </TextView>
           <CustomTextInput
             value={registration}

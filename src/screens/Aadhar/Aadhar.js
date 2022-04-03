@@ -9,6 +9,7 @@ import {
   CustomButton,
   CustomTextInput,
 } from '../../components';
+import {validateNumbers} from '../../regex';
 import {useNavigation} from '@react-navigation/native';
 import {useRoute} from '@react-navigation/native';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
@@ -18,12 +19,27 @@ const Aadhar = () => {
   const route = useRoute();
   const navigation = useNavigation();
   const [aadhar, setAadhar] = useState();
+  const [validationMessage, setValidationMessage] = useState(undefined);
 
+  const onAadharNumberChange = nameText => {
+    const nameStr = nameText.trim();
+    const someValidationError =
+      nameStr.length === 0 || (nameStr.length > 11 && validateNumbers(aadhar))
+        ? undefined
+        : 'Aadhar number should be of 12 digits';
+    if (someValidationError) {
+      setValidationMessage(someValidationError);
+    } else {
+      setValidationMessage(undefined);
+    }
+    setAadhar(nameStr);
+  };
   const handleContinue = () => {
     let data = route.params?.data;
     data = {...data, adhaar: aadhar};
     navigation.navigate('Registration', {data});
   };
+  const val = (!aadhar || aadhar.length > 11) && !validationMessage;
 
   return (
     <KeyboardAwareScrollView
@@ -39,19 +55,25 @@ const Aadhar = () => {
           <View style={{width: 300, height: 300, alignSelf: 'center'}}>
             <LottieView source={aadharAnim} autoPlay loop />
           </View>
-          <TextView style={styles.signInTitle}>Aadhar Number</TextView>
+          <TextView style={styles.signInTitle}>
+            Aadhar Number (Optional)
+          </TextView>
           <TextView style={styles.signInDescription}>
-            This Application require your Aadhar number as mandatory field
+            This Application require your Aadhar number as optional.
           </TextView>
           <CustomTextInput
             value={aadhar}
-            placeholder="eg: 1234 5678 9012"
+            placeholder="Enter Aadhar number"
             keyboardType="number-pad"
-            onChangeText={txt => setAadhar(txt.trim())}
+            onChangeText={onAadharNumberChange}
+            maxLength={12}
           />
+          <TextView style={styles.errorText}>
+            {validationMessage && validationMessage}
+          </TextView>
           <View style={styles.buttonWrapper}>
             <CustomButton
-              disabled={!aadhar}
+              disabled={!val}
               containerStyle={styles.buttonContainer}
               textStyle={styles.signUpText}
               onPress={handleContinue}

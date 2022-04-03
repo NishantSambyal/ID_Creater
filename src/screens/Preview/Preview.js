@@ -17,6 +17,7 @@ import {
   CustomDropDown,
   DatePicker,
 } from '../../components';
+import {validateAlphabets, validateNumbers} from '../../regex';
 import {useNavigation} from '@react-navigation/native';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {useRoute} from '@react-navigation/native';
@@ -30,10 +31,33 @@ const Preview = () => {
   const [data, setData] = useState(route.params?.data);
   const [classArr, setClassArr] = useState();
   const [showRegistration, setShowRegistration] = useState(false);
+  const [showAadhar, setShowAadhar] = useState(false);
+
+  const [nameValidationMessage, setNameValidationMessage] = useState(undefined);
+  const [sectionValidationMessage, setSectionValidationMessage] =
+    useState(undefined);
+  const [fatherValidationMessage, setFatherValidationMessage] =
+    useState(undefined);
+  const [motherValidationMessage, setMotherValidationMessage] =
+    useState(undefined);
+  const [contactValidationMessage, setContactValidationMessage] =
+    useState(undefined);
+  const [aadharValidationMessage, setAadharValidationMessage] =
+    useState(undefined);
+
+  const validationCheck = (emailTxt, errorMsg) => {
+    if (!validateAlphabets(emailTxt)) {
+      return errorMsg;
+    }
+    return;
+  };
 
   useEffect(() => {
     if (data.registration_number) {
       setShowRegistration(true);
+    }
+    if (data.adhaar) {
+      setShowAadhar(true);
     }
     async function fetchMyAPI() {
       const classData = await getClasses();
@@ -66,10 +90,9 @@ const Preview = () => {
       type: 'image/jpeg',
       name: 'photo.jpg',
     });
-    console.log('data', formData);
     const response = registerUser(formData);
     if (response.error) {
-      alert('Something went wrong! Please try again later');
+      alert('Error ' + response.message);
     } else {
       Alert.alert(
         'Thank You',
@@ -135,7 +158,17 @@ const Preview = () => {
     }
   };
 
-  const onStudentNameChange = name => {
+  const onStudentNameChange = nameStr => {
+    const name = nameStr;
+    const someValidationError = validationCheck(
+      name,
+      'The name field must contain only alphabets',
+    );
+    if (someValidationError) {
+      setNameValidationMessage(someValidationError);
+    } else {
+      setNameValidationMessage(undefined);
+    }
     let updatedData = {
       ...data,
       name,
@@ -151,15 +184,26 @@ const Preview = () => {
     setData(updatedData);
   };
 
-  const onSectionChange = section => {
+  const onSectionChange = sectionTxt => {
+    const section = sectionTxt.trim();
+    const someValidationError = validationCheck(
+      section,
+      'The section field must contain only alphabets',
+    );
+    if (someValidationError) {
+      setSectionValidationMessage(someValidationError);
+    } else {
+      setSectionValidationMessage(undefined);
+    }
     let updatedData = {
       ...data,
-      section: section,
+      section,
     };
     setData(updatedData);
   };
 
-  const onRollNumberChange = roll_number => {
+  const onRollNumberChange = rollNumStr => {
+    const roll_number = rollNumStr.trim();
     let updatedData = {
       ...data,
       roll_number,
@@ -175,7 +219,17 @@ const Preview = () => {
     setData(updatedData);
   };
 
-  const onFatherNameChange = father_name => {
+  const onFatherNameChange = fatherName => {
+    const father_name = fatherName;
+    const someValidationError = validationCheck(
+      father_name,
+      "Father's Name must contain only alphabets",
+    );
+    if (someValidationError) {
+      setFatherValidationMessage(someValidationError);
+    } else {
+      setFatherValidationMessage(undefined);
+    }
     let updatedData = {
       ...data,
       father_name,
@@ -183,7 +237,17 @@ const Preview = () => {
     setData(updatedData);
   };
 
-  const onMotherNameChange = mother_name => {
+  const onMotherNameChange = motherName => {
+    const mother_name = motherName;
+    const someValidationError = validationCheck(
+      mother_name,
+      "Mother's Name must contain only alphabets",
+    );
+    if (someValidationError) {
+      setMotherValidationMessage(someValidationError);
+    } else {
+      setMotherValidationMessage(undefined);
+    }
     let updatedData = {
       ...data,
       mother_name,
@@ -199,7 +263,17 @@ const Preview = () => {
     setData(updatedData);
   };
 
-  const onContactChange = contact_information => {
+  const onContactChange = contactInfo => {
+    const contact_information = contactInfo.trim();
+    const someValidationError =
+      contact_information.length > 9 && validateNumbers(contact_information)
+        ? undefined
+        : 'Contact number should be of 10 digits';
+    if (someValidationError) {
+      setContactValidationMessage(someValidationError);
+    } else {
+      setContactValidationMessage(undefined);
+    }
     let updatedData = {
       ...data,
       contact_information,
@@ -207,7 +281,17 @@ const Preview = () => {
     setData(updatedData);
   };
 
-  const onAadharChange = adhaar => {
+  const onAadharChange = aadhar => {
+    const adhaar = aadhar.trim();
+    const someValidationError =
+      adhaar.length === 0 || (adhaar.length > 11 && validateNumbers(aadhar))
+        ? undefined
+        : 'Aadhar number should be of 12 digits';
+    if (someValidationError) {
+      setAadharValidationMessage(someValidationError);
+    } else {
+      setAadharValidationMessage(undefined);
+    }
     let updatedData = {
       ...data,
       adhaar,
@@ -223,21 +307,22 @@ const Preview = () => {
     setData(updatedData);
   };
   const bloodArr = ['A+', 'A-', 'B+', 'B-', 'O+', 'O-', 'AB+', 'AB-'];
+  const val =
+    data.name &&
+    !nameValidationMessage &&
+    data.section &&
+    !sectionValidationMessage &&
+    data.roll_number &&
+    data.father_name &&
+    !fatherValidationMessage &&
+    data.mother_name &&
+    !motherValidationMessage &&
+    data.address &&
+    data.contact_information &&
+    !contactValidationMessage &&
+    (!data.aadhar || data.aadhar.length > 11) &&
+    !aadharValidationMessage;
 
-  // const classArr = [
-  //   '1st',
-  //   '2nd',
-  //   '3rd',
-  //   '4th',
-  //   '5th',
-  //   '6th',
-  //   '7th',
-  //   '8th',
-  //   '9th',
-  //   '10th',
-  //   '11th',
-  //   '12th',
-  // ];
   return (
     <KeyboardAwareScrollView
       enableOnAndroid={true}
@@ -275,6 +360,10 @@ const Preview = () => {
               value={data.name}
               onChangeText={studentName => onStudentNameChange(studentName)}
             />
+
+            <TextView style={styles.errorText}>
+              {nameValidationMessage && nameValidationMessage}
+            </TextView>
           </View>
           <View style={styles.cardContainer}>
             <TextView style={styles.label}>Class</TextView>
@@ -296,12 +385,17 @@ const Preview = () => {
               value={data.section}
               onChangeText={section => onSectionChange(section)}
             />
+            <TextView style={styles.errorText}>
+              {sectionValidationMessage && sectionValidationMessage}
+            </TextView>
           </View>
           <View style={styles.cardContainer}>
             <TextView style={styles.label}>Roll Number</TextView>
             <TextInput
               style={styles.inputText}
               value={data.roll_number}
+              keyboardType="number-pad"
+              placeholder="Roll number"
               onChangeText={value => onRollNumberChange(value)}
             />
           </View>
@@ -334,6 +428,9 @@ const Preview = () => {
               value={data.father_name}
               onChangeText={value => onFatherNameChange(value)}
             />
+            <TextView style={styles.errorText}>
+              {fatherValidationMessage && fatherValidationMessage}
+            </TextView>
           </View>
           <View style={styles.cardContainer}>
             <TextView style={styles.label}>Mother's Name</TextView>
@@ -342,6 +439,9 @@ const Preview = () => {
               value={data.mother_name}
               onChangeText={value => onMotherNameChange(value)}
             />
+            <TextView style={styles.errorText}>
+              {motherValidationMessage && motherValidationMessage}
+            </TextView>
           </View>
 
           <View style={styles.cardContainer}>
@@ -360,22 +460,36 @@ const Preview = () => {
               style={styles.inputText}
               keyboardType="number-pad"
               value={data.contact_information}
+              maxLength={10}
               onChangeText={value => onContactChange(value)}
             />
+            <TextView style={styles.errorText}>
+              {contactValidationMessage && contactValidationMessage}
+            </TextView>
           </View>
 
-          <View style={styles.cardContainer}>
-            <TextView style={styles.label}>Aadhar Number</TextView>
-            <TextInput
-              style={styles.inputText}
-              keyboardType="number-pad"
-              value={data.adhaar}
-              onChangeText={value => onAadharChange(value)}
-            />
-          </View>
+          {showAadhar && (
+            <View style={styles.cardContainer}>
+              <TextView style={styles.label}>Aadhar Number (optional)</TextView>
+              <TextInput
+                style={styles.inputText}
+                keyboardType="number-pad"
+                placeholder="Enter Aadhar number"
+                maxLength={12}
+                value={data.adhaar}
+                onChangeText={value => onAadharChange(value)}
+              />
+              <TextView style={styles.errorText}>
+                {aadharValidationMessage && aadharValidationMessage}
+              </TextView>
+            </View>
+          )}
+
           {showRegistration && (
             <View style={styles.cardContainer}>
-              <TextView style={styles.label}>Registration Number</TextView>
+              <TextView style={styles.label}>
+                Registration Number (optional)
+              </TextView>
               <TextInput
                 style={styles.inputText}
                 keyboardType="number-pad"
@@ -387,7 +501,7 @@ const Preview = () => {
 
           <View style={styles.buttonWrapper}>
             <CustomButton
-              // disabled={!name}
+              disabled={!val}
               containerStyle={styles.buttonContainer}
               textStyle={styles.signUpText}
               onPress={handleContinue}
