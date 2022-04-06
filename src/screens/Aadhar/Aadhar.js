@@ -37,7 +37,11 @@ const Aadhar = () => {
   const handleContinue = () => {
     let data = route.params?.data;
     data = {...data, adhaar: aadhar};
-    navigation.navigate('Registration', {data});
+    navigation.navigate('Profile', {data});
+  };
+  const handleSkip = () => {
+    let data = route.params?.data;
+    navigation.navigate('Profile', {data});
   };
   const val = (!aadhar || aadhar.length > 11) && !validationMessage;
 
@@ -78,6 +82,12 @@ const Aadhar = () => {
               textStyle={styles.signUpText}
               onPress={handleContinue}
               title={'Continue'}
+            />
+            <CustomButton
+              containerStyle={styles.skipContainer}
+              textStyle={styles.skipText}
+              onPress={handleSkip}
+              title={'Skip >>'}
             />
           </View>
         </View>

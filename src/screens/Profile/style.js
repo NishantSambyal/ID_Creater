@@ -47,4 +47,9 @@ export default StyleSheet.create({
     position: 'absolute',
     marginTop: 80,
   },
+  dontUseFront: {
+    fontWeight: 'bold',
+    textAlign: 'center',
+    textDecorationLine: 'underline',
+  },
 });

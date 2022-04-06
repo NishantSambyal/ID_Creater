@@ -62,4 +62,9 @@ export default StyleSheet.create({
     color: 'red',
     marginStart: 10,
   },
+  dontUseFront: {
+    fontWeight: 'bold',
+    textAlign: 'center',
+    textDecorationLine: 'underline',
+  },
 });

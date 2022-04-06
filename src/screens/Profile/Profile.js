@@ -114,6 +114,9 @@ const Profile = () => {
         <Header title={'Student Photo'} />
         <View style={styles.container}>
           {anim()}
+          <TextView style={styles.dontUseFront}>
+            "DO NOT USE FRONT CAMERA"
+          </TextView>
           <TextView style={styles.signInTitle}>Student Photo</TextView>
           <TextView style={styles.signInDescription}>
             This Application require your image as mandatory field

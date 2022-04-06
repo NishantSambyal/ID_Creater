@@ -67,45 +67,47 @@ const Preview = () => {
   }, []);
 
   const handleContinue = () => {
-    let formData = new FormData();
-    formData.append('user_id', data.user_id);
-    formData.append('name', data.name);
-    formData.append('school_class_id', data.class.id);
-    formData.append('section', data.section);
-    formData.append('roll_number', data.roll_number);
-    formData.append('blood_group', data.blood_group);
+    console.log(data);
+    // let formData = new FormData();
+    // formData.append('user_id', data.user_id);
+    // formData.append('name', data.name);
+    // formData.append('school_class_id', data.class.id);
+    // formData.append('section', data.section);
+    // formData.append('roll_number', data.roll_number);
+    // formData.append('blood_group', data.blood_group);
 
-    formData.append('date_of_birth', data.date_of_birth);
-    formData.append('father_name', data.father_name);
-    formData.append('mother_name', data.mother_name);
-    formData.append('address', data.address);
-    formData.append('contact_information', data.contact_information);
-    formData.append('adhaar', data.adhaar);
-    if (showRegistration) {
-      formData.append('registration_number', data.registration_number);
-    }
+    // formData.append('date_of_birth', data.date_of_birth);
+    // formData.append('father_name', data.father_name);
+    // formData.append('mother_name', data.mother_name);
+    // formData.append('address', data.address);
+    // formData.append('contact_information', data.contact_information);
+    // formData.append('adhaar', data.adhaar);
+    // if (showRegistration) {
+    //   formData.append('registration_number', data.registration_number);
+    // }
 
-    formData.append('image', {
-      uri: data.photo.uri,
-      type: 'image/jpeg',
-      name: 'photo.jpg',
-    });
-    const response = registerUser(formData);
-    if (response.error) {
-      alert('Error ' + response.message);
-    } else {
-      Alert.alert(
-        'Thank You',
-        'Your details has been submitted successfully!',
-        [
-          {
-            text: 'Okay',
-            onPress: () => navigation.replace('Login'),
-            style: 'cancel',
-          },
-        ],
-      );
-    }
+    // formData.append('image', {
+    //   uri: data.photo.uri,
+    //   type: 'image/jpeg',
+    //   name: 'photo.jpg',
+    // });
+    // const response = registerUser(formData);
+    // console.log(response);
+    // if (response.error) {
+    //   alert('Error ' + response.message);
+    // } else {
+    //   Alert.alert(
+    //     'Thank You',
+    //     'Your details has been submitted successfully!',
+    //     [
+    //       {
+    //         text: 'Okay',
+    //         onPress: () => navigation.replace('Login'),
+    //         style: 'cancel',
+    //       },
+    //     ],
+    //   );
+    // }
   };
   const hasCameraPermission = useCallback(async () => {
     if (Platform.OS === 'android' && Platform.Version < 23) {
@@ -343,6 +345,9 @@ const Preview = () => {
               />
               <TouchableOpacity onPress={openCamera}>
                 <TextView style={styles.retakePic}>RETAKE PICTURE</TextView>
+                <TextView style={styles.dontUseFront}>
+                  "DO NOT USE FRONT CAMERA"
+                </TextView>
               </TouchableOpacity>
             </View>
           )}
@@ -501,7 +506,7 @@ const Preview = () => {
 
           <View style={styles.buttonWrapper}>
             <CustomButton
-              disabled={!val}
+              // disabled={!val}
               containerStyle={styles.buttonContainer}
               textStyle={styles.signUpText}
               onPress={handleContinue}

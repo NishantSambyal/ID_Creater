@@ -22,9 +22,12 @@ const Registration = () => {
   const handleContinue = () => {
     let data = route.params?.data;
     data = {...data, registration_number: registration};
-    navigation.navigate('Profile', {data});
+    navigation.navigate('Class', {data});
   };
-
+  const handleSkip = () => {
+    let data = route.params?.data;
+    navigation.navigate('Class', {data});
+  };
   return (
     <KeyboardAwareScrollView
       enableOnAndroid={true}
@@ -57,6 +60,12 @@ const Registration = () => {
               textStyle={styles.signUpText}
               onPress={handleContinue}
               title={'Continue'}
+            />
+            <CustomButton
+              containerStyle={styles.skipContainer}
+              textStyle={styles.skipText}
+              onPress={handleSkip}
+              title={'Skip >>'}
             />
           </View>
         </View>

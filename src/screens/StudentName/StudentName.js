@@ -42,7 +42,7 @@ const StudentName = () => {
   const handleContinue = () => {
     let data = route.params?.data;
     data = {...data, name};
-    navigation.navigate('Class', {data});
+    navigation.navigate('Registration', {data});
   };
   const val = name && !validationMessage;
 

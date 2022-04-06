@@ -27,4 +27,15 @@ export default StyleSheet.create({
     color: 'red',
     marginStart: 10,
   },
+  skipContainer: {
+    alignItems: 'center',
+    backgroundColor: 'white',
+    borderColor: colors.primary,
+    borderWidth: 1,
+  },
+  skipText: {
+    fontWeight: '700',
+    fontStyle: 'normal',
+    color: colors.primary,
+  },
 });
