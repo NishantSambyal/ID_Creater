@@ -67,4 +67,40 @@ export default StyleSheet.create({
     textAlign: 'center',
     textDecorationLine: 'underline',
   },
+  /* Modal Styles */
+  centeredView: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    // marginTop: 22,
+  },
+  modalView: {
+    backgroundColor: 'white',
+    borderRadius: 8,
+    padding: 35,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 5,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+    borderWidth: 2,
+  },
+  modalTitle: {
+    fontSize: 20,
+    fontWeight: '700',
+    marginBottom: 16,
+  },
+  divider: {
+    backgroundColor: '#000',
+    height: 1,
+    width: 200,
+    marginVertical: 10,
+  },
+  closeIcon: {
+    alignSelf: 'flex-end',
+  },
 });

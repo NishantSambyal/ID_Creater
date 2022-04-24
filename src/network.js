@@ -1,4 +1,4 @@
-const BASE_URL = 'https://student.ilovegreencoffee.in/api';
+const BASE_URL = 'https://impressads.in/api';
 export const callApi = (url, method, formData) => {
   const api = BASE_URL + url;
   return fetch(api, {

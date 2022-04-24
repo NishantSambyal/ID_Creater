@@ -5,21 +5,25 @@ import {
   PermissionsAndroid,
   ToastAndroid,
   Platform,
+  Modal,
+  Image,
 } from 'react-native';
 import React, {useState, useCallback} from 'react';
 import LottieView from 'lottie-react-native';
+import {close} from '../../assets/icons';
 import {profileAnim, fingerAnim} from '../../assets/animations';
 import {BaseScreen, Header, TextView, CustomButton} from '../../components';
 import {useNavigation} from '@react-navigation/native';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import styles from './style';
 import {useRoute} from '@react-navigation/native';
-import {captureImage} from '../../imagePicker';
+import {captureImage, openLibrary} from '../../imagePicker';
 
 const Profile = () => {
   const route = useRoute();
   const navigation = useNavigation();
   const [documentPic, setDocumentPic] = useState();
+  const [modalVisible, setModalVisible] = useState(false);
 
   const hasCameraPermission = useCallback(async () => {
     if (Platform.OS === 'android' && Platform.Version < 23) {
@@ -57,7 +61,10 @@ const Profile = () => {
     return false;
   }, []);
 
+  console.log(documentPic);
+
   const openCamera = () => {
+    setModalVisible(false);
     if (hasCameraPermission()) {
       captureImage({single: true}).then(res => {
         if (res?.assets) {
@@ -66,6 +73,16 @@ const Profile = () => {
         }
       });
     }
+  };
+
+  const openGallery = () => {
+    setModalVisible(false);
+    openLibrary({single: true}).then(res => {
+      if (res?.assets) {
+        const assets = res?.assets;
+        setDocumentPic(assets[0]);
+      }
+    });
   };
 
   const handleContinue = () => {
@@ -83,12 +100,12 @@ const Profile = () => {
             style={[styles.imageStyle]}
             imageStyle={{borderRadius: 8}}
           />
-          <TouchableOpacity onPress={openCamera}>
+          <TouchableOpacity onPress={() => setModalVisible(!modalVisible)}>
             <TextView style={styles.retakePic}>RETAKE PICTURE</TextView>
           </TouchableOpacity>
         </View>
       ) : (
-        <TouchableOpacity onPress={openCamera}>
+        <TouchableOpacity onPress={() => setModalVisible(!modalVisible)}>
           <View style={{alignItems: 'center'}}>
             <View style={{width: 300, height: 200, position: 'absolute'}}>
               <LottieView source={profileAnim} autoPlay loop />
@@ -102,6 +119,28 @@ const Profile = () => {
       )}
     </View>
   );
+
+  const chooser = () => (
+    <Modal animationType="fade" transparent={true} visible={modalVisible}>
+      <View style={styles.centeredView}>
+        <TouchableOpacity onPress={() => setModalVisible(false)}>
+          <Image source={close} style={styles.closeIcon} />
+        </TouchableOpacity>
+        <View style={styles.modalView}>
+          <TextView style={styles.modalTitle}>Choose Type</TextView>
+          <TouchableOpacity onPress={openCamera}>
+            <TextView style={styles.valueText}>Camera</TextView>
+          </TouchableOpacity>
+
+          <View style={styles.divider} />
+          <TouchableOpacity onPress={openGallery}>
+            <TextView style={styles.valueText}>Gallery</TextView>
+          </TouchableOpacity>
+        </View>
+      </View>
+    </Modal>
+  );
+
   return (
     <KeyboardAwareScrollView
       enableOnAndroid={true}
@@ -131,6 +170,7 @@ const Profile = () => {
             />
           </View>
         </View>
+        {chooser()}
       </BaseScreen>
     </KeyboardAwareScrollView>
   );

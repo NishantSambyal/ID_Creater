@@ -7,6 +7,8 @@ import {
   Platform,
   Alert,
   TextInput,
+  Modal,
+  Image,
 } from 'react-native';
 import React, {useState, useEffect, useCallback} from 'react';
 import {
@@ -20,8 +22,9 @@ import {
 import {validateAlphabets, validateNumbers} from '../../regex';
 import {useNavigation} from '@react-navigation/native';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
+import {close} from '../../assets/icons';
 import {useRoute} from '@react-navigation/native';
-import {captureImage} from '../../imagePicker';
+import {captureImage, openLibrary} from '../../imagePicker';
 import {getClasses, registerUser} from '../../network';
 import styles from './style';
 
@@ -31,6 +34,7 @@ const Preview = () => {
   const [data, setData] = useState(route.params?.data);
   const [classArr, setClassArr] = useState();
   const [showRegistration, setShowRegistration] = useState(false);
+  const [modalVisible, setModalVisible] = useState(false);
   const [showAadhar, setShowAadhar] = useState(false);
 
   const [nameValidationMessage, setNameValidationMessage] = useState(undefined);
@@ -101,7 +105,11 @@ const Preview = () => {
         [
           {
             text: 'Okay',
-            onPress: () => navigation.replace('Login'),
+            onPress: () =>
+              navigation.reset({
+                index: 0,
+                routes: [{name: 'StudentName'}],
+              }),
             style: 'cancel',
           },
         ],
@@ -145,6 +153,7 @@ const Preview = () => {
   }, []);
 
   const openCamera = () => {
+    setModalVisible(false);
     if (hasCameraPermission()) {
       captureImage({single: true}).then(res => {
         if (res?.assets) {
@@ -157,6 +166,19 @@ const Preview = () => {
         }
       });
     }
+  };
+  const openGallery = () => {
+    setModalVisible(false);
+    openLibrary({single: true}).then(res => {
+      if (res?.assets) {
+        const assets = res?.assets;
+        let updatedData = {
+          ...data,
+          photo: assets[0],
+        };
+        setData(updatedData);
+      }
+    });
   };
 
   const onStudentNameChange = nameStr => {
@@ -307,6 +329,27 @@ const Preview = () => {
     };
     setData(updatedData);
   };
+  const chooser = () => (
+    <Modal animationType="fade" transparent={true} visible={modalVisible}>
+      <View style={styles.centeredView}>
+        <TouchableOpacity onPress={() => setModalVisible(false)}>
+          <Image source={close} style={styles.closeIcon} />
+        </TouchableOpacity>
+        <View style={styles.modalView}>
+          <TextView style={styles.modalTitle}>Choose Type</TextView>
+          <TouchableOpacity onPress={openCamera}>
+            <TextView style={styles.valueText}>Camera</TextView>
+          </TouchableOpacity>
+
+          <View style={styles.divider} />
+          <TouchableOpacity onPress={openGallery}>
+            <TextView style={styles.valueText}>Gallery</TextView>
+          </TouchableOpacity>
+        </View>
+      </View>
+    </Modal>
+  );
+
   const bloodArr = ['A+', 'A-', 'B+', 'B-', 'O+', 'O-', 'AB+', 'AB-'];
   const val =
     data.name &&
@@ -342,7 +385,7 @@ const Preview = () => {
                 style={[styles.imageStyle]}
                 imageStyle={{borderRadius: 8}}
               />
-              <TouchableOpacity onPress={openCamera}>
+              <TouchableOpacity onPress={() => setModalVisible(!modalVisible)}>
                 <TextView style={styles.retakePic}>RETAKE PICTURE</TextView>
                 <TextView style={styles.dontUseFront}>
                   "DO NOT USE FRONT CAMERA"
@@ -513,6 +556,7 @@ const Preview = () => {
             />
           </View>
         </View>
+        {chooser()}
       </BaseScreen>
     </KeyboardAwareScrollView>
   );
