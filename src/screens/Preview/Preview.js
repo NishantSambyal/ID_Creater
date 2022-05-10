@@ -27,6 +27,7 @@ import {useRoute} from '@react-navigation/native';
 import {captureImage, openLibrary} from '../../imagePicker';
 import {getClasses, registerUser} from '../../network';
 import styles from './style';
+import {getAsyncStorage, LOGIN_USER_ID} from '../../asyncStorage';
 
 const Preview = () => {
   const route = useRoute();
@@ -68,52 +69,57 @@ const Preview = () => {
       setClassArr(classData);
     }
     fetchMyAPI();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const handleContinue = () => {
-    let formData = new FormData();
-    formData.append('user_id', data.user_id);
-    formData.append('name', data.name);
-    formData.append('school_class_id', data.class.id);
-    formData.append('section', data.section);
-    formData.append('roll_number', data.roll_number);
-    formData.append('blood_group', data.blood_group);
+  const handleContinue = async () => {
+    const user_id = await getAsyncStorage(LOGIN_USER_ID);
+    if (user_id) {
+      alert(user_id);
+      let formData = new FormData();
+      formData.append('user_id', user_id);
+      formData.append('name', data.name);
+      formData.append('school_class_id', data.class.id);
+      formData.append('section', data.section);
+      formData.append('roll_number', data.roll_number);
+      formData.append('blood_group', data.blood_group);
 
-    formData.append('date_of_birth', data.date_of_birth);
-    formData.append('father_name', data.father_name);
-    formData.append('mother_name', data.mother_name);
-    formData.append('address', data.address);
-    formData.append('contact_information', data.contact_information);
-    formData.append('adhaar', data.adhaar);
-    if (showRegistration) {
-      formData.append('registration_number', data.registration_number);
-    }
+      formData.append('date_of_birth', data.date_of_birth);
+      formData.append('father_name', data.father_name);
+      formData.append('mother_name', data.mother_name);
+      formData.append('address', data.address);
+      formData.append('contact_information', data.contact_information);
+      formData.append('adhaar', data.adhaar);
+      if (showRegistration) {
+        formData.append('registration_number', data.registration_number);
+      }
 
-    formData.append('image', {
-      uri: data.photo.uri,
-      type: 'image/jpeg',
-      name: 'photo.jpg',
-    });
-    const response = registerUser(formData);
-    console.log(response);
-    if (response.error) {
-      alert('Error ' + response.message);
-    } else {
-      Alert.alert(
-        'Thank You',
-        'Your details has been submitted successfully!',
-        [
-          {
-            text: 'Okay',
-            onPress: () =>
-              navigation.reset({
-                index: 0,
-                routes: [{name: 'StudentName'}],
-              }),
-            style: 'cancel',
-          },
-        ],
-      );
+      formData.append('image', {
+        uri: data.photo.uri,
+        type: 'image/jpeg',
+        name: 'photo.jpg',
+      });
+      console.log('payload', formData);
+      const response = await registerUser(formData);
+      if (response.error) {
+        alert('Error ' + response.message);
+      } else {
+        Alert.alert(
+          response.exception ? response.exception : 'Thank You',
+          response.message,
+          [
+            {
+              text: 'Okay',
+              onPress: () =>
+                navigation.reset({
+                  index: 0,
+                  routes: [{name: 'StudentName'}],
+                }),
+              style: 'cancel',
+            },
+          ],
+        );
+      }
     }
   };
   const hasCameraPermission = useCallback(async () => {

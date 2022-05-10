@@ -14,6 +14,11 @@ import {useNavigation} from '@react-navigation/native';
 import styles from './style';
 import {loginUser} from '../../network';
 import Loader from '../../components/Loader';
+import {
+  setAsyncStorage,
+  getAsyncStorage,
+  LOGIN_USER_ID,
+} from '../../asyncStorage';
 
 const Login = () => {
   const navigation = useNavigation();
@@ -28,9 +33,12 @@ const Login = () => {
     formData.append('email', email);
     formData.append('password', password);
     const response = await loginUser(formData);
+    setAsyncStorage(LOGIN_USER_ID, JSON.stringify(response.user_info.id));
+
     if (response.status) {
       setLoading(false);
-      const data = {user_id: response.user_info.id};
+      const user_id = await getAsyncStorage(LOGIN_USER_ID);
+      const data = {user_id};
       navigation.replace('StudentName', {data});
     } else {
       setLoading(false);
