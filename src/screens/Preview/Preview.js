@@ -75,7 +75,6 @@ const Preview = () => {
   const handleContinue = async () => {
     const user_id = await getAsyncStorage(LOGIN_USER_ID);
     if (user_id) {
-      alert(user_id);
       let formData = new FormData();
       formData.append('user_id', user_id);
       formData.append('name', data.name);
