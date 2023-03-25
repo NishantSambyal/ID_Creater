@@ -32,10 +32,10 @@ const Login = () => {
     let formData = new FormData();
     formData.append('email', email);
     formData.append('password', password);
+    console.log('login clicked', formData);
     const response = await loginUser(formData);
-    setAsyncStorage(LOGIN_USER_ID, JSON.stringify(response.user_info.id));
-
     if (response.status) {
+      setAsyncStorage(LOGIN_USER_ID, JSON.stringify(response.user_info.id));
       setLoading(false);
       const user_id = await getAsyncStorage(LOGIN_USER_ID);
       const data = {user_id};
